@@ -1,28 +1,44 @@
-def sum_list(A, B) :
-    for i in range (1, len(A)) :
-        A[i] = A[i] + B[i]
-    print(A)
-    return A
+from matriz import *
 
-def multiply_by(A, k) :
-    size = len(A)
-    for i in range (1, size+1) :
-        A[i-1] = A[i-1] * k
-    return A
+def multiply_i_rows_by(A, B, i, q) :
+    A.multiply_i_row_by(i, q)
+    B.multiply_i_row_by(i, q)
 
+def gauss_jordan(A, B) :
+    if A.rows() != B.rows() or A.rows() != A.columns() :
+        print("Matriz inválida")
+        return 0
+    
+    for i in range (0, A.columns()) :
+        k = A.at(i)
+        if k != 1 :
+            if k == 0 : #Si elemento A[i][i] es igual a 0
+                for j in range (i+1, A.rows()) :
+                    if A.at_(j, i) != 0 : #Encontrar A[i][i] != 0
+                        A.exchange_rows(i, j)
+                        B.exchange_rows(i, j)
+                        k = A.at(i)
+                
+            q = 1.0 / k
+            multiply_i_rows_by(A, B, i, q)
 
-def gauss_jordan(A) :
-    size = len(A)
-    for i in range (1, size+1) :
-        if A[i-1][i-1] != 1 :
-            A[i-1] = multiply_by(A[i-1], 1.0/A[i-1][i-1])
-        for j in range (i, size) :
-            if A[j][i-1] != 0 :
-                print(A[0])
-                temp0 = multiply_by(A[0], -1.0*A[j][i-1]/A[0][i-1])
-                print("Mult: ", temp0)
-                print("antes: ", A[j])
-                print(sum_list(A[j], temp0))
-                print("desp: ", A[j])
-                #A[j-1] = A[j-1] - multiply_by(A[i-1], A[
-    return A
+        for j in range (i+1, A.rows()) :
+            t = A.at_(j,i)
+            if A.at_(j,i) != 0 :
+                r = -1.0 * t
+                A.add_i_to_j(i, j, r)
+                B.add_i_to_j(i, j, r)
+
+    for i in range (A.columns() - 1, -1, -1) :
+        if A.at(i) == 0 :
+            print("Muchas soluciones")
+        for j in range (i - 1, -1, -1) :
+            t = A.at_(j,i)
+            if A.at_(j,i) != 0 :
+                r = -1.0 * t
+                A.add_i_to_j(i, j, r)
+                B.add_i_to_j(i, j, r)
+
+    A.imprime()
+    print()
+    B.imprime()
