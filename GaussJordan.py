@@ -4,6 +4,11 @@ def multiply_i_rows_by(A, B, i, q) :
     A.multiply_i_row_by(i, q)
     B.multiply_i_row_by(i, q)
 
+def imprime(A, B) :
+	A.imprime()
+	print()
+	B.imprime()
+
 def gauss_jordan(A, B) :
     if A.rows() != B.rows() or A.rows() != A.columns() :
         print("Matriz inválida")
@@ -18,7 +23,10 @@ def gauss_jordan(A, B) :
                         A.exchange_rows(i, j)
                         B.exchange_rows(i, j)
                         k = A.at(i)
-                
+                if k == 0 :
+                    print("Muchas soluciones")
+                    imprime(A, B)
+                    return
             q = 1.0 / k
             multiply_i_rows_by(A, B, i, q)
 
@@ -32,6 +40,8 @@ def gauss_jordan(A, B) :
     for i in range (A.columns() - 1, -1, -1) :
         if A.at(i) == 0 :
             print("Muchas soluciones")
+            imprime(A, B)
+            return
         for j in range (i - 1, -1, -1) :
             t = A.at_(j,i)
             if A.at_(j,i) != 0 :
@@ -39,6 +49,4 @@ def gauss_jordan(A, B) :
                 A.add_i_to_j(i, j, r)
                 B.add_i_to_j(i, j, r)
 
-    A.imprime()
-    print()
-    B.imprime()
+    imprime(A, B)
